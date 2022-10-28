@@ -146,6 +146,12 @@ fn main() {
         }
     }
 
+    if numcounta > poola || numcountb > poolb {
+        println!("{}", "pools must be greater than numbercounts".red());
+        AppArgs::command().print_help().unwrap();
+        std::process::exit(1);
+    }
+
     let noprint = args.noindexprint;
     if noprint || args.fieldcount == 1 {
         for _ in 0..args.fieldcount {
