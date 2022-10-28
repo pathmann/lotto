@@ -1,7 +1,6 @@
 use colored::*;
 use clap::{Parser, ValueEnum, CommandFactory};
-use rand::{thread_rng, Rng};
-use rand::distributions::Uniform;
+use rand::{thread_rng};
 
 /// Predefined game types
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -26,11 +25,11 @@ struct AppArgs {
     ///Numbercount (Only for custom games)
     numbercount_a: Option<usize>,
     ///Poolsize (Only for custom games)
-    poolsize_a: Option<u32>,
+    poolsize_a: Option<usize>,
     ///Second numbercount (Only for custom games)
     numbercount_b: Option<usize>,
     ///Second poolsize (Only for custom games)
-    poolsize_b: Option<u32>,
+    poolsize_b: Option<usize>,
 
     ///don't print indexes (if fieldcount > 1)
     #[arg(short, long)]
@@ -45,13 +44,14 @@ struct AppArgs {
 /// 
 /// * `poolsize` - size of the sample's pool
 /// 
-fn get_field(numcount: usize, poolsize: u32) -> String {
-    let rng = thread_rng();
+fn get_field(numcount: usize, poolsize: usize) -> String {
+    let mut rng = thread_rng();
 
-    let range = Uniform::new_inclusive(1, poolsize);
-    let mut sample: Vec<u32> = rng.sample_iter(range).take(numcount).collect();
+    let mut sample = rand::seq::index::sample(&mut rng, poolsize, numcount).into_vec();
 
     sample.sort();
+
+    sample = sample.iter().map(|i| i +1).collect();
 
     let mut res = String::new();
     for i in sample {
@@ -76,7 +76,7 @@ fn get_field(numcount: usize, poolsize: u32) -> String {
     /// 
     /// * `poolsize2` - second poolsize for one field, pass 0 to omit
     /// 
-fn print_field(id: u32, numcount1: usize, poolsize1: u32, numcount2: usize, poolsize2: u32) {
+fn print_field(id: u32, numcount1: usize, poolsize1: usize, numcount2: usize, poolsize2: usize) {
     if id != 0 {
         print!("{}\t", (id.to_string() + ".").yellow());
     }
