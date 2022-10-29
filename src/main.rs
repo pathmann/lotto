@@ -164,3 +164,56 @@ fn main() {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn str_to_field(s: &String) -> Vec<usize> {
+        s.split(" ").filter(|&s| !s.is_empty() && s != " ").map(|s| s.parse::<usize>().unwrap()).collect()
+    }
+
+    fn vec_is_distinct<T: PartialEq>(v: &Vec<T>) -> bool {
+        if v.len() <= 1 {
+            return true;
+        }
+
+        // if the Vec is ordered, the items are distinct if neighbours are not equal
+        for i in 1..v.len() {
+            if v[i] == v[i -1] {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    #[test]
+    fn numbers_distinct() {
+        let field = str_to_field(&get_field(2, 2));
+        assert!(vec_is_distinct(&field));
+
+        let field = str_to_field(&get_field(3, 3));
+        assert!(vec_is_distinct(&field));
+
+        for _ in 0..100 {
+            let field = str_to_field(&get_field(5, 50));
+            assert!(vec_is_distinct(&field));
+
+            let field = str_to_field(&get_field(2, 10));
+            assert!(vec_is_distinct(&field));
+
+            let field = str_to_field(&get_field(6, 49));
+            assert!(vec_is_distinct(&field));
+
+            let field = str_to_field(&get_field(8, 10));
+            assert!(vec_is_distinct(&field));
+
+            let field = str_to_field(&get_field(4, 6));
+            assert!(vec_is_distinct(&field));
+
+            let field = str_to_field(&get_field(99, 100));
+            assert!(vec_is_distinct(&field));
+        }
+    }
+}
