@@ -36,7 +36,7 @@ struct AppArgs {
     noindexprint: bool,
 } 
 
-/// Returns a random generated lottery field
+/// Returns a random generated lottery field sorted and separated by a whitespace
 /// 
 /// # Arguments
 /// 
